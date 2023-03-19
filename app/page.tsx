@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <main className="container p-4 mx-auto">
       <section className="flex flex-col items-center justify-center">
-        <Image className="p-4 max-w-xs" alt="tiktok logo" src={Logo} />
+        <Image className="p-4 max-w-[15rem]" alt="tiktok logo" src={Logo} />
         <div className="flex w-full flex-col gap-6 max-w-md">
           <Form />
           <AudioPlayer />

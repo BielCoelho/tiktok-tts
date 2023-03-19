@@ -15,7 +15,7 @@ export const apiTts = async ({ text, voice }: IApiTtsProps) => {
 
   const { data, error } = await res.json();
 
-  if (error) return error;
+  if (error) return { error: true, data: error };
 
   return data;
 };

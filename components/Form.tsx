@@ -5,8 +5,8 @@ import { apiTts } from "@/lib/api";
 import { FormEvent, useState } from "react";
 
 export default function Form() {
-  const { setAudio } = useAppContext();
-  const [text, setText] = useState("");
+  const { setAudio, setLoading, setError, setText, text } = useAppContext();
+  const [inputText, setInputText] = useState("");
   const [voice, setVoice] = useState("br_003");
 
   const voices = [
@@ -17,7 +17,18 @@ export default function Form() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const audio = await apiTts({ text, voice });
+    setLoading(true);
+    setText(inputText);
+    const audio = await apiTts({ text: inputText, voice }).catch((err) => {
+      setError(true);
+      console.error(err);
+    });
+
+    if (audio?.error) {
+      setError(true);
+      setText(audio.error);
+    }
+
     setAudio(audio);
   };
 
@@ -26,9 +37,13 @@ export default function Form() {
       <textarea
         required
         className="block w-full p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        placeholder="Escreva o audio a ser gerado aqui"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
+        placeholder="Digite o texto que deseja gerar"
+        value={inputText}
+        onChange={(e) => {
+          const length = e.target.value.length;
+          if (length > 280) return;
+          setInputText(e.target.value);
+        }}
       />
       <div className="flex gap-4">
         <select
