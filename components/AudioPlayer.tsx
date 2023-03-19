@@ -1,7 +1,9 @@
 "use client";
 
 import { useAppContext } from "@/app/AppContext";
+import { generateFile } from "@/lib/api";
 import { useEffect, useRef } from "react";
+import { MdWhatsapp } from "react-icons/md";
 
 export default function AudioPlayer() {
   const { audio, text, error, loading, setLoading } = useAppContext();
@@ -23,6 +25,21 @@ export default function AudioPlayer() {
     link.href = `data:audio/mpeg;base64,${audio}`;
     link.download = "audio.mp3";
     link.click();
+  };
+
+  const handleShare = async () => {
+    const audioString = `data:audio/mpeg;base64,${audio}`;
+
+    const audioFile = await generateFile(audioString);
+
+    try {
+      await navigator.share({
+        files: [audioFile],
+        title: "Audio gerado @ tiktok-tts.vercel.app",
+      });
+    } catch (error) {
+      console.log("Error sharing audio file:", error);
+    }
   };
 
   return (
@@ -60,7 +77,7 @@ export default function AudioPlayer() {
           {audio === "" ? (
             <></>
           ) : (
-            <div className="flex gap-4 mt-4">
+            <div className="flex gap-2 mt-4">
               <button
                 className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
                 onClick={handlePlay}
@@ -72,6 +89,13 @@ export default function AudioPlayer() {
                 onClick={handleDownload}
               >
                 Baixar
+              </button>
+              <button
+                className="flex items-center gap-2 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                onClick={handleShare}
+              >
+                <MdWhatsapp />
+                Compartilhar
               </button>
             </div>
           )}

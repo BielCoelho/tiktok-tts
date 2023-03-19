@@ -19,3 +19,16 @@ export const apiTts = async ({ text, voice }: IApiTtsProps) => {
 
   return data;
 };
+
+export const generateFile = async (file: string) => {
+  const audioFile = await fetch(file)
+    .then((res) => res.blob())
+    .then((blob) => {
+      const file = new File([blob], "audio.mp3", {
+        type: "audio/mpeg",
+      });
+      return file;
+    });
+
+  return audioFile;
+};
