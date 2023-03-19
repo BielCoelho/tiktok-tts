@@ -17,7 +17,7 @@ const AppContext = createContext<IContextProps>({
 });
 
 export default function ContextProvider({ children }: { children: ReactNode }) {
-  const [audio, setAudio] = useState("test");
+  const [audio, setAudio] = useState("");
   const [error, setError] = useState(false);
 
   return (

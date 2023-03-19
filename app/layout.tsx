@@ -1,3 +1,4 @@
+import "../styles/globals.css";
 import ContextProvider from "./AppContext";
 
 export const metadata = {
