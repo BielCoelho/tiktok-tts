@@ -16,7 +16,7 @@ export const POST = async (req: NextRequest) => {
     "https://api16-normal-c-useast1a.tiktokv.com/media/api/text/speech/invoke";
 
   const fixInput = (input: string) => {
-    input = input.replace("+", "plus");
+    input = input.replace("+", "mais");
     input = input.replace(/\s/g, "+");
     return input;
   };
