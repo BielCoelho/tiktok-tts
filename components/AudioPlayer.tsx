@@ -4,6 +4,9 @@ import { useAppContext } from "@/app/AppContext";
 import { generateFile } from "@/lib/api";
 import { useEffect, useRef } from "react";
 import { MdWhatsapp } from "react-icons/md";
+import { AlertError } from "./AlertError";
+import { getAudioFileName } from "@/utils/textTools";
+import { LOCAL_STORAGE } from "@/constants";
 
 export default function AudioPlayer() {
   const { audio, text, error, loading, setLoading } = useAppContext();
@@ -17,13 +20,15 @@ export default function AudioPlayer() {
 
   const handlePlay = () => {
     if (!audioRef.current) return;
+    audioRef.current.volume = Number(localStorage.getItem(LOCAL_STORAGE.VOLUME)) || 1;
     audioRef.current.play();
   };
 
   const handleDownload = () => {
+    console.log(getAudioFileName(text));
     const link = document.createElement("a");
     link.href = `data:audio/mpeg;base64,${audio}`;
-    link.download = "audio.mp3";
+    link.download = getAudioFileName(text);
     link.click();
   };
 
@@ -35,23 +40,25 @@ export default function AudioPlayer() {
     try {
       await navigator.share({
         files: [audioFile],
-        title: "Audio gerado @ tiktok-tts.vercel.app",
+        title: "Audio gerado @ https://tiktok.gabrielchaves.dev",
       });
     } catch (error) {
-      console.log("Error sharing audio file:", error);
+      console.error(error);
     }
   };
+
+  if (error) return <AlertError>{error}</AlertError>;
 
   return (
     <>
       {text !== "" && (
-        <div className="flex flex-col justify-center items-center p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-          <div className="flex justify-center items-center rounded-lg p-4 w-full text-sm text-gray-900 bg-gray-50 dark:bg-gray-700 border-0 border-b-2 border-transparent dark:border-transparent appearance-none dark:text-white dark:focus:border-transparent focus:outline-none focus:ring-0 focus:border-transparent peer">
+        <div className="flex gap-4 flex-col justify-center items-center p-6 border rounded-lg shadow bg-gray-800 border-gray-700">
+          <div className="flex justify-center items-center rounded-lg p-4 w-full text-sm bg-gray-700 border-0 border-b-2 border-transparent appearance-none text-white focus:outline-none focus:ring-0 focus:border-transparent peer">
             {loading ? (
               <div>
                 <svg
                   aria-hidden="true"
-                  className="inline w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                  className="inline w-8 h-8 mr-2 animate-spin text-gray-600 fill-blue-600"
                   viewBox="0 0 100 101"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -67,34 +74,38 @@ export default function AudioPlayer() {
                 </svg>
               </div>
             ) : (
-              <>
-                {error ? "Falha ao gerar: " : "Gerado: "}
-                &quot;{text}&quot;
-              </>
+              <span>{error ? error : `"${text}"`}</span>
             )}
           </div>
-          <audio ref={audioRef} src={`data:audio/mpeg;base64,${audio}`} />
+          <audio
+            controls
+            onVolumeChange={(e) =>
+              localStorage.setItem(LOCAL_STORAGE.VOLUME, String((e.target as HTMLAudioElement).volume || 0.5))
+            }
+            ref={audioRef}
+            src={`data:audio/mpeg;base64,${audio}`}
+          />
           {audio === "" ? (
             <></>
           ) : (
-            <div className="flex gap-2 mt-4">
+            <div className="flex justify-between w-full gap-2 mt-4">
               <button
-                className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                className="border focus:outline-none focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 bg-gray-800 text-white border-gray-600 hover:bg-gray-700 hover:border-gray-600 focus:ring-gray-700"
                 onClick={handlePlay}
               >
                 Tocar
               </button>
               <button
-                className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                className="border focus:outline-none focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 bg-gray-800 text-white border-gray-600 hover:bg-gray-700 hover:border-gray-600 focus:ring-gray-700"
                 onClick={handleDownload}
               >
                 Baixar
               </button>
               <button
-                className="flex items-center gap-2 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                className="flex items-center gap-2 border focus:outline-none focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 bg-gray-800 text-white border-gray-600 hover:bg-gray-700 hover:border-gray-600 focus:ring-gray-700"
                 onClick={handleShare}
               >
-                <MdWhatsapp />
+                <MdWhatsapp size="22" />
                 Compartilhar
               </button>
             </div>

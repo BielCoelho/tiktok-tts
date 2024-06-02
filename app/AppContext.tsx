@@ -7,8 +7,8 @@ interface IContextProps {
   setAudio: React.Dispatch<React.SetStateAction<string>>;
   text: string;
   setText: React.Dispatch<React.SetStateAction<string>>;
-  error: boolean;
-  setError: React.Dispatch<React.SetStateAction<boolean>>;
+  error: string;
+  setError: React.Dispatch<React.SetStateAction<string>>;
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -18,7 +18,7 @@ const AppContext = createContext<IContextProps>({
   setText: () => {},
   audio: "",
   setAudio: () => {},
-  error: false,
+  error: "",
   setError: () => {},
   loading: false,
   setLoading: () => {},
@@ -27,7 +27,7 @@ const AppContext = createContext<IContextProps>({
 export default function ContextProvider({ children }: { children: ReactNode }) {
   const [audio, setAudio] = useState("");
   const [text, setText] = useState("");
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   return (

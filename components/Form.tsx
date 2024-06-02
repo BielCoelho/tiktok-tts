@@ -1,43 +1,45 @@
 "use client";
 
 import { useAppContext } from "@/app/AppContext";
-import { apiTts } from "@/lib/api";
+import { generateVoice } from "@/app/_action";
+import { VOICES } from "@/constants";
 import { FormEvent, useState } from "react";
 
-export default function Form() {
-  const { setAudio, setLoading, setError, setText, text } = useAppContext();
-  const [inputText, setInputText] = useState("");
-  const [voice, setVoice] = useState("br_003");
+const frasePadrao = "Eu estou saudando a mandioca";
 
-  const voices = [
-    { voice: "br_003", title: "Marcia" },
-    { voice: "br_004", title: "Daniela" },
-    { voice: "br_005", title: "Tiago" },
-  ];
+export default function Form() {
+  const { setAudio, setLoading, setError, setText } = useAppContext();
+  const [inputText, setInputText] = useState("");
+  const [lastSubmitted, setLastSubmitted] = useState("a093rjf");
+  const [voice, setVoice] = useState<string>(VOICES[0].voice);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (inputText === lastSubmitted) return;
+
     setLoading(true);
-    setText(inputText);
-    const audio = await apiTts({ text: inputText, voice }).catch((err) => {
-      setError(true);
-      console.error(err);
-    });
 
-    if (audio?.error) {
-      setError(true);
-      setText(audio.error);
+    const text = inputText || frasePadrao;
+
+    try {
+      const data = await generateVoice({ text, voice });
+      setText(data.phrase);
+      setAudio(data.audio);
+      setLastSubmitted(text);
+    } catch (error) {
+      if (error instanceof Error) setError(error.message);
+    } finally {
+      setLoading(false);
     }
-
-    setAudio(audio);
   };
 
   return (
     <form className="w-full mt-5 flex flex-col gap-4" onSubmit={handleSubmit}>
       <textarea
-        required
-        className="block w-full p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        placeholder="Digite o texto que deseja gerar"
+        autoComplete="off"
+        spellCheck="false"
+        className="block w-full p-4  border rounded-lg m:text-md bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+        placeholder={frasePadrao}
         value={inputText}
         onChange={(e) => {
           const length = e.target.value.length;
@@ -51,9 +53,9 @@ export default function Form() {
           name="voice"
           value={voice}
           onChange={(e) => setVoice(e.target.value)}
-          className="block py-2 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
+          className="block py-2 px-0 w-full text-sm bg-transparent border-0 border-b-2 appearance-none text-gray-400 border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
         >
-          {voices.map((v) => (
+          {VOICES.map((v) => (
             <option key={v.title} value={v.voice}>
               {v.title}
             </option>
@@ -61,7 +63,7 @@ export default function Form() {
         </select>
         <button
           type="submit"
-          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+          className="text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-blue-800"
         >
           Gerar
         </button>
