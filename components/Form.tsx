@@ -15,17 +15,18 @@ export default function Form() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (inputText === lastSubmitted) return;
+    const text = inputText || frasePadrao;
+    const genToken = `${text}-${voice}`;
+
+    if (genToken === lastSubmitted) return;
 
     setLoading(true);
-
-    const text = inputText || frasePadrao;
 
     try {
       const data = await generateVoice({ text, voice });
       setText(data.phrase);
       setAudio(data.audio);
-      setLastSubmitted(text);
+      setLastSubmitted(genToken);
     } catch (error) {
       if (error instanceof Error) setError(error.message);
     } finally {
