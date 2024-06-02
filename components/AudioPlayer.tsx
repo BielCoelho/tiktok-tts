@@ -88,7 +88,7 @@ export default function AudioPlayer() {
           {audio === "" ? (
             <></>
           ) : (
-            <div className="flex justify-between w-full gap-2 mt-4">
+            <div className="flex flex-col sm:flex-row justify-between w-full gap-2 mt-4">
               <button
                 className="border focus:outline-none focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 bg-gray-800 text-white border-gray-600 hover:bg-gray-700 hover:border-gray-600 focus:ring-gray-700"
                 onClick={handlePlay}
@@ -102,7 +102,7 @@ export default function AudioPlayer() {
                 Baixar
               </button>
               <button
-                className="flex items-center gap-2 border focus:outline-none focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 bg-gray-800 text-white border-gray-600 hover:bg-gray-700 hover:border-gray-600 focus:ring-gray-700"
+                className="flex items-center justify-center gap-2 border focus:outline-none focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 bg-gray-800 text-white border-gray-600 hover:bg-gray-700 hover:border-gray-600 focus:ring-gray-700"
                 onClick={handleShare}
               >
                 <MdWhatsapp size="22" />
