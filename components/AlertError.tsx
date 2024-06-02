@@ -3,10 +3,7 @@ import { PropsWithChildren } from "react";
 interface AlertProps extends PropsWithChildren {}
 
 export const AlertError = ({ children }: AlertProps) => (
-  <div
-    className="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-    role="alert"
-  >
+  <div className="flex items-center p-4 mb-4 text-sm rounded-lg bg-gray-800 text-red-400" role="alert">
     <svg
       className="flex-shrink-0 inline w-4 h-4 me-3"
       aria-hidden="true"

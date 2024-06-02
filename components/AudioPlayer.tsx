@@ -35,7 +35,7 @@ export default function AudioPlayer() {
   const handleShare = async () => {
     const audioString = `data:audio/mpeg;base64,${audio}`;
 
-    const audioFile = await generateFile(audioString);
+    const audioFile = await generateFile(audioString, getAudioFileName(text));
 
     try {
       await navigator.share({

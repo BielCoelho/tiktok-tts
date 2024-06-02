@@ -53,7 +53,7 @@ export default function Form() {
           name="voice"
           value={voice}
           onChange={(e) => setVoice(e.target.value)}
-          className="block py-2 px-0 w-full text-sm bg-transparent border-0 border-b-2 appearance-none text-gray-400 border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
+          className="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
         >
           {VOICES.map((v) => (
             <option key={v.title} value={v.voice}>

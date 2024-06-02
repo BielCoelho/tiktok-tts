@@ -1,10 +1,7 @@
 import { TiktokAPIResponse } from "@/interfaces/tiktok";
 import { BielError } from "./errors";
 
-export const fetchTTS = async (
-  voice: string,
-  text: string
-): Promise<TiktokAPIResponse> => {
+export const fetchTTS = async (voice: string, text: string): Promise<TiktokAPIResponse> => {
   const url = getTTSUrl(voice, text);
   const headers = getTTSHeaders();
   const res = await fetch(url, {
@@ -17,33 +14,11 @@ export const fetchTTS = async (
   return await res.json();
 };
 
-interface IApiTtsProps {
-  text: string;
-  voice: string;
-}
-
-export const apiTts = async ({ text, voice }: IApiTtsProps) => {
-  const res = await fetch("/api/tiktoktts", {
-    method: "POST",
-    body: JSON.stringify({
-      text,
-      voice,
-    }),
-  });
-  if (!res.ok) return { error: true };
-
-  const { data, error } = await res.json();
-
-  if (error) return { error: true, data: error };
-
-  return data;
-};
-
-export const generateFile = async (file: string) => {
+export const generateFile = async (file: string, filename: string) => {
   const audioFile = await fetch(file)
     .then((res) => res.blob())
     .then((blob) => {
-      const file = new File([blob], "audio.mp3", {
+      const file = new File([blob], filename, {
         type: "audio/mpeg",
       });
       return file;
@@ -53,9 +28,7 @@ export const generateFile = async (file: string) => {
 };
 
 export const getTTSUrl = (voice: string, text: string) =>
-  `${process.env.TIKTOK_TTS_URL}?text_speaker=${voice}&req_text=${encodeURI(
-    text
-  )}&speaker_map_type=0&aid=1233`;
+  `${process.env.TIKTOK_TTS_URL}?text_speaker=${voice}&req_text=${encodeURI(text)}&speaker_map_type=0&aid=1233`;
 
 export const getTTSHeaders = () => {
   return {
