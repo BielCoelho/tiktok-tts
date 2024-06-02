@@ -3,10 +3,10 @@
 import { useAppContext } from "@/app/AppContext";
 import { generateFile } from "@/lib/api";
 import { useEffect, useRef } from "react";
-import { MdWhatsapp } from "react-icons/md";
 import { AlertError } from "./AlertError";
 import { getAudioFileName } from "@/utils/textTools";
 import { LOCAL_STORAGE } from "@/constants";
+import { FaDownload, FaPlay, FaWhatsapp } from "react-icons/fa";
 
 export default function AudioPlayer() {
   const { audio, text, error, loading, setLoading } = useAppContext();
@@ -90,22 +90,24 @@ export default function AudioPlayer() {
           ) : (
             <div className="flex flex-col sm:flex-row justify-between w-full gap-2 mt-4">
               <button
-                className="border focus:outline-none focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 bg-gray-800 text-white border-gray-600 hover:bg-gray-700 hover:border-gray-600 focus:ring-gray-700"
+                className="flex items-center justify-center gap-2 border focus:outline-none focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 bg-gray-800 text-white border-gray-600 hover:bg-gray-700 hover:border-gray-600 focus:ring-gray-700"
                 onClick={handlePlay}
               >
+                <FaPlay size="14" />
                 Tocar
               </button>
               <button
-                className="border focus:outline-none focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 bg-gray-800 text-white border-gray-600 hover:bg-gray-700 hover:border-gray-600 focus:ring-gray-700"
+                className="flex items-center justify-center gap-2 border focus:outline-none focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 bg-gray-800 text-white border-gray-600 hover:bg-gray-700 hover:border-gray-600 focus:ring-gray-700"
                 onClick={handleDownload}
               >
+                <FaDownload size="14" />
                 Baixar
               </button>
               <button
                 className="flex items-center justify-center gap-2 border focus:outline-none focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 bg-gray-800 text-white border-gray-600 hover:bg-gray-700 hover:border-gray-600 focus:ring-gray-700"
                 onClick={handleShare}
               >
-                <MdWhatsapp size="22" />
+                <FaWhatsapp size="22" />
                 Compartilhar
               </button>
             </div>
