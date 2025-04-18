@@ -5,7 +5,7 @@ import { generateVoice } from "@/app/_action";
 import { VOICES } from "@/constants";
 import { FormEvent, useState } from "react";
 
-const frasePadrao = "Eu estou saudando a mandioca";
+const defaultPhrase = "Eu estou saudando a mandioca";
 
 export default function Form() {
   const { setAudio, setLoading, setError, setText } = useAppContext();
@@ -15,7 +15,7 @@ export default function Form() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const text = inputText || frasePadrao;
+    const text = inputText || defaultPhrase;
     const genToken = `${text}-${voice}`;
 
     if (genToken === lastSubmitted) return;
@@ -40,7 +40,7 @@ export default function Form() {
         autoComplete="off"
         spellCheck="false"
         className="block w-full p-4  border rounded-lg m:text-md bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
-        placeholder={frasePadrao}
+        placeholder={defaultPhrase}
         value={inputText}
         onChange={(e) => {
           const length = e.target.value.length;
